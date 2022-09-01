@@ -1,0 +1,36 @@
+- name: Demostrar modulos k8s
+  host: localhost
+  gather_facts: no
+  connection: local
+  vars:
+    namespace: sajuarez-dev
+  
+  modules_defaults:
+    group/k8s:
+      namespace: "{{namespace}}"
+      api_key:
+      host:
+  
+  tasks:
+    - name: Crear los objetos del manifiesto
+      k8s: 
+        state: present
+        src: "{{ playbook_dir + '/hello.yml' }}"
+        
+    - name: Cambiar de ClusterIP a NodePort
+      ks8_service:
+        state: present
+        name: nodejs-ex
+        type: NodePort
+        ports:
+          - port: 8080
+            protocol: TCP
+            
+    - name: Obtener información de los pods
+      ks8_info:
+        kind: Pod
+        label_selectors:
+          - app = nodejs-ex
+          
+    - name: Exponer https
+    
