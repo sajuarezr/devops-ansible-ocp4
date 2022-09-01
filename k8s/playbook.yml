@@ -32,5 +32,12 @@
         label_selectors:
           - app = nodejs-ex
           
-    - name: Exponer https
-    
+    - name: Exponer https con ClusterIP
+      k8s_service:
+        state: present
+        name: nodejs-ex
+        ports:
+          - port: 443
+            protocol: TCP
+        selector:
+          app: nodejs-ex
